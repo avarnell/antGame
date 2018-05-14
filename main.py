@@ -1,11 +1,24 @@
 import pygame
 import sys
 import os
+import timeit
+import random
 
 
 '''
 Objects
 '''
+class Apple(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.timeExisting = 0
+
+        self.image= pygame.image.load(os.path.join('images','apple.png'))
+        self.rect = self.image.get_rect()
+
+    def placeApple(self, x, y):
+        self.rect.x = x
+        self.rect.y = y
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -71,12 +84,16 @@ backdrop = pygame.image.load(os.path.join('images','background.png')).convert()
 backdropbox = world.get_rect()
 
 player = Player()
+apple = Apple()
+
+apple.placeApple(random.randint(10, worldx-10), random.randint(10,worldy-10))
 
 player.rect.x = 0
 player.rect.y = 0
 
 player_list = pygame.sprite.Group()
 player_list.add(player)
+player_list.add(apple)
 
 stepsx = 10
 stepsy = 10
