@@ -32,16 +32,16 @@ class Player(pygame.sprite.Sprite):
         #left
         if self.movex < 0:
             self.frame += 1
-            if self.frame < 3 * ani:
+            if self.frame > 3 * ani:
                 self.frame = 0
             self.image = self.images[self.frame//ani]
 
         #right
         if self.movex > 0:
             self.frame += 1
-            if self.frame > 3*ani:
+            if self.frame > 3 * ani:
                 self.frame = 0
-            self.image = self.images[(self.frame//ani)+4]
+            self.image = self.images[ self.frame//ani]
 
 '''
 Setup
