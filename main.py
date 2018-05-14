@@ -67,13 +67,23 @@ class Player(pygame.sprite.Sprite):
                 self.frame = 0
             self.image = self.images[self.frame//ani]
 
+class Game:
+    def __init__(self):
+        self.score = 0
+
+    def isCollision(self, x1,y1, x2,y2, bsize):
+        print(x1,y1,x2,y2)
+        if x1 >= x2 and x1 <= x2 + bsize:
+            if y1 >= y2 and y1 <= y2 + bsize:
+                return True
+        return False
+
 '''
 Setup
 '''
 
 worldx = 960
 worldy = 720
-
 fps = 40
 ani = 4
 clock = pygame.time.Clock()
@@ -85,6 +95,7 @@ backdropbox = world.get_rect()
 
 player = Player()
 apple = Apple()
+game = Game()
 
 apple.placeApple(random.randint(10, worldx-10), random.randint(10,worldy-10))
 
@@ -109,6 +120,8 @@ while main == True:
     player.update()
     pygame.display.flip()
     clock.tick(fps)
+    if game.isCollision(player.rect.x,player.rect.y,apple.rect.x,apple.rect.y,100):
+        print("HIT")
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
