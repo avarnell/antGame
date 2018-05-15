@@ -42,6 +42,16 @@ class Player(pygame.sprite.Sprite):
         self.rect.x = self.rect.x + self.movex
         self.rect.y = self.rect.y + self.movey
 
+        #wrap movement
+        if self.rect.x > worldx:
+            self.rect.x = -50
+        if self.rect.y > worldy:
+            self.rect.y = -150
+        if self.rect.x < -50:
+            self.rect.x = worldx
+        if self.rect.y < -150:
+            self.rect.y = worldy
+
         #left
         if self.movex < 0:
             self.frame += 1
@@ -72,9 +82,8 @@ class Game:
         self.score = 0
 
     def isCollision(self, x1,y1, x2,y2, bsize):
-        print(x1,y1,x2,y2)
-        if x1 >= x2 and x1 <= x2 + bsize:
-            if y1 >= y2 and y1 <= y2 + bsize:
+        if x1+120 > x2 and x1-20 < x2:
+            if y1+250> y2 and y1-50 < y2:
                 return True
         return False
 
@@ -97,7 +106,7 @@ player = Player()
 apple = Apple()
 game = Game()
 
-apple.placeApple(random.randint(10, worldx-10), random.randint(10,worldy-10))
+apple.placeApple(random.randint(30, worldx-30), random.randint(30, worldy-30))
 
 player.rect.x = 0
 player.rect.y = 0
@@ -122,6 +131,7 @@ while main == True:
     clock.tick(fps)
     if game.isCollision(player.rect.x,player.rect.y,apple.rect.x,apple.rect.y,100):
         print("HIT")
+
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
