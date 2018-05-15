@@ -1,7 +1,6 @@
 import pygame
 import sys
 import os
-import timeit
 import random
 
 
@@ -39,8 +38,9 @@ class Player(pygame.sprite.Sprite):
         self.movey += y
 
     def update(self):
-        self.rect.x = self.rect.x + self.movex
-        self.rect.y = self.rect.y + self.movey
+        if game.gameOver == False:
+            self.rect.x = self.rect.x + self.movex
+            self.rect.y = self.rect.y + self.movey
 
         #wrap movement
         if self.rect.x > worldx:
@@ -81,6 +81,11 @@ class Game:
     def __init__(self):
         self.score = 0
         self.scoreLabel = ""
+        self.gameOver = False
+
+        self.startTime = pygame.time.get_ticks()
+        self.timeLabel = ""
+
     def isCollision(self, x1,y1, x2,y2, bsize):
         if x1+120 > x2 and x1-20 < x2:
             if y1+250> y2 and y1-50 < y2:
@@ -88,8 +93,11 @@ class Game:
         return False
     def incrimentScore(self):
         self.score += 1
-
-
+    def getTime(self):
+        if 60 - ((pygame.time.get_ticks()-self.startTime)/1000) > 0:
+            return  int(60 - ((pygame.time.get_ticks()-self.startTime)/1000))
+        else:
+            self.gameOver = True
 
 '''
 Setup
@@ -134,8 +142,11 @@ Main Loop
 
 while main == True:
     game.scoreLabel = myFont.render("Score: "+ str(game.score), True, (255,255,0))
+    game.timeLabel = myFont.render("Time: " + str(game.getTime()), True, (255,255,0))
+
     world.blit(backdrop, backdropbox)
     world.blit(game.scoreLabel, (850,5))
+    world.blit(game.timeLabel, (850,30))
 
     player_list.draw(world)
     player.update()
@@ -173,6 +184,6 @@ while main == True:
                 player.control(0, -stepsy)
 
             if event.key == ord('q'):
+                main = False
                 pygame.quit()
                 sys.exit()
-                main = False
