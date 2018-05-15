@@ -16,9 +16,9 @@ class Apple(pygame.sprite.Sprite):
         self.image= pygame.image.load(os.path.join('images','apple.png'))
         self.rect = self.image.get_rect()
 
-    def placeApple(self, x, y):
-        self.rect.x = x
-        self.rect.y = y
+    def placeApple(self):
+        self.rect.x = random.randint(30, worldx-30)
+        self.rect.y = random.randint(30, worldy-30)
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -80,12 +80,16 @@ class Player(pygame.sprite.Sprite):
 class Game:
     def __init__(self):
         self.score = 0
-
+        self.scoreLabel = ""
     def isCollision(self, x1,y1, x2,y2, bsize):
         if x1+120 > x2 and x1-20 < x2:
             if y1+250> y2 and y1-50 < y2:
                 return True
         return False
+    def incrimentScore(self):
+        self.score += 1
+
+
 
 '''
 Setup
@@ -97,7 +101,10 @@ fps = 40
 ani = 4
 clock = pygame.time.Clock()
 pygame.init()
+pygame.font.init()
 
+
+myFont = pygame.font.SysFont('Comic Sans MS', 20)
 world = pygame.display.set_mode([worldx,worldy])
 backdrop = pygame.image.load(os.path.join('images','background.png')).convert()
 backdropbox = world.get_rect()
@@ -106,7 +113,7 @@ player = Player()
 apple = Apple()
 game = Game()
 
-apple.placeApple(random.randint(30, worldx-30), random.randint(30, worldy-30))
+apple.placeApple()
 
 player.rect.x = 0
 player.rect.y = 0
@@ -119,18 +126,25 @@ stepsx = 10
 stepsy = 10
 main = True
 
+
+
 '''
 Main Loop
 '''
 
 while main == True:
+    game.scoreLabel = myFont.render("Score: "+ str(game.score), True, (255,255,0))
     world.blit(backdrop, backdropbox)
+    world.blit(game.scoreLabel, (850,5))
+
     player_list.draw(world)
     player.update()
     pygame.display.flip()
     clock.tick(fps)
+
     if game.isCollision(player.rect.x,player.rect.y,apple.rect.x,apple.rect.y,100):
-        print("HIT")
+        apple.placeApple()
+        game.incrimentScore()
 
 
     for event in pygame.event.get():
